@@ -2,16 +2,8 @@ module.exports = async (req, res) => {
 
   try {
 
-    const end = new Date();
-    const start = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
-    // Convert to ISO 8601 format (Cloudflare API requires this format)
-    const startISO = start.toISOString();
-    const endISO = end.toISOString();
-
     const url = new URL('https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries');
-    url.searchParams.append('start', startISO);
-    url.searchParams.append('end', endISO);
+    url.searchParams.append('range', '24h');
 
     console.log('Request URL:', url.toString());
 
