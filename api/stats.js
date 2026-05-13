@@ -1,13 +1,16 @@
 module.exports = async (req, res) => {
-
   try {
-
     const url = new URL(
       "https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries"
     );
 
-    // ✅ THIS is the correct parameter for this endpoint
-    url.searchParams.append("dateRange", "1d");
+    // Calculate dates explicitly to prevent automated query overwriting
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    // Cloudflare Radar explicitly requires camelCase variables
+    url.searchParams.append("dateStart", oneDayAgo.toISOString());
+    url.searchParams.append("dateEnd", now.toISOString());
 
     console.log("Request URL:", url.toString());
 
@@ -19,7 +22,6 @@ module.exports = async (req, res) => {
     });
 
     const json = await response.json();
-
     console.log(JSON.stringify(json, null, 2));
 
     if (!json.success) {
@@ -27,20 +29,13 @@ module.exports = async (req, res) => {
     }
 
     const values = json.result?.serie_0?.values || [];
-
-    const attacks = values.reduce(
-      (sum, v) => sum + (v || 0),
-      0
-    );
+    const attacks = values.reduce((sum, v) => sum + (Number(v) || 0), 0);
 
     res.status(200).json({ attacks });
 
   } catch (err) {
-
     res.status(500).json({
       error: err.toString()
     });
-
   }
-
 };
