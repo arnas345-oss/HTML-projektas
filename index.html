@@ -22,11 +22,31 @@
       margin-bottom: 20px;
     }
 
+    .time-frame {
+      font-size: 16px;
+      opacity: 0.5;
+      margin-top: 10px;
+    }
+
     .counter {
       font-size: 72px;
-      color: red;
       font-weight: bold;
+      transition: color 0.5s ease;
     }
+
+    .status {
+      font-size: 24px;
+      margin-top: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: color 0.5s ease;
+    }
+
+    /* Dinaminės spalvų klasės */
+    .safe { color: #2ecc71; }       /* Žalia */
+    .warning { color: #f39c12; }    /* Oranžinė/Geltona */
+    .danger { color: #e74c3c; }     /* Raudona */
   </style>
 </head>
 
@@ -34,27 +54,55 @@
 
   <div class="title">PASAULINIS ATAKŲ AKTYVUMO INDEKSAS</div>
 
-  <div class="counter" id="counter">
-    Kraunama...
-  </div>
+  <!-- Skaičiaus konteineris -->
+  <div class="counter" id="counter">Kraunama...</div>
+
+  <!-- Naujas būsenos tekstas -->
+  <div class="status" id="status"></div>
+
+  <div class="time-frame">Per pastarąsias 24 val.</div>
 
 <script>
   async function loadData() {
+    try {
+      const response = await fetch("/api/stats");
+      const data = await response.json();
+      const score = Number(data.attacks);
 
-    const response = await fetch("/api/stats");
+      const counterEl = document.getElementById("counter");
+      const statusEl = document.getElementById("status");
 
-    const data = await response.json();
+      // Atvaizduojame skaičių
+      counterEl.innerText = score.toLocaleString("lt-LT");
 
-    document.getElementById("counter").innerText =
-      Number(data.attacks).toLocaleString("lt-LT");
+      // Pašaliname senas spalvų klases
+      counterEl.className = "counter";
+      statusEl.className = "status";
+
+      // Logika pagal jūsų nustatytus rėžius
+      if (score <= 30) {
+        counterEl.classList.add("safe");
+        statusEl.classList.add("safe");
+        statusEl.innerText = "Saugu";
+      } else if (score <= 70) {
+        counterEl.classList.add("warning");
+        statusEl.classList.add("warning");
+        statusEl.innerText = "Padidėjusi rizika";
+      } else {
+        counterEl.classList.add("danger");
+        statusEl.classList.add("danger");
+        statusEl.innerText = "Krizė";
+      }
+
+    } catch (error) {
+      document.getElementById("counter").innerText = "Klaida";
+      document.getElementById("status").innerText = "";
+    }
   }
 
   loadData();
-
   setInterval(loadData, 60000);
 </script>
-
-   <div class="title">Per pastarąsias 24 val.</div>
 
 </body>
 </html>
