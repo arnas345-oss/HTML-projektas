@@ -2,15 +2,19 @@ module.exports = async (req, res) => {
 
   try {
 
-    const url = new URL('https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries');
-    url.searchParams.append('range', '24h');
+    const url = new URL(
+      "https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries"
+    );
 
-    console.log('Request URL:', url.toString());
+    // ✅ THIS is the correct parameter for this endpoint
+    url.searchParams.append("dateRange", "1d");
+
+    console.log("Request URL:", url.toString());
 
     const response = await fetch(url.toString(), {
       headers: {
         Authorization: `Bearer ${process.env.CF_API_KEY}`,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       }
     });
 
