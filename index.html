@@ -88,10 +88,13 @@
         counterEl.classList.add("warning");
         statusEl.classList.add("warning");
         statusEl.innerText = "Padidėjusi rizika";
-      } else {
+      } else if (score <=100){
         counterEl.classList.add("danger");
         statusEl.classList.add("danger");
         statusEl.innerText = "Krizė";
+      } else{
+        document.getElementById("counter").innerText = "Klaida";
+        document.getElementById("status").innerText = "";
       }
 
     } catch (error) {
