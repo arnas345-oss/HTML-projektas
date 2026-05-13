@@ -5,10 +5,14 @@ module.exports = async (req, res) => {
     const end = new Date();
     const start = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
+    // Convert to Unix timestamps (seconds, not milliseconds)
+    const startTimestamp = Math.floor(start.getTime() / 1000);
+    const endTimestamp = Math.floor(end.getTime() / 1000);
+
     const url =
       `https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries` +
-      `?start=${start.toISOString()}` +
-      `&end=${end.toISOString()}`;
+      `?start=${startTimestamp}` +
+      `&end=${endTimestamp}`;
 
     const response = await fetch(url, {
       headers: {
