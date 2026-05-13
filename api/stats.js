@@ -27,8 +27,8 @@ module.exports = async (req, res) => {
     }
 
     const values = json.result?.serie_0?.values || [];
-    const attacks = Math.round(
-  values.reduce((sum, v) => sum + (Number(v ?? 0)), 0)
+    const attacks = 
+    values.reduce((sum, v) => sum + (Number(v ?? 0))
 );
 
     res.status(200).json({ attacks });
