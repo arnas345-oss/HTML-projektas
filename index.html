@@ -46,7 +46,7 @@
       const data = await response.json();
 
       document.getElementById("counter").innerText =
-        Number(data.attacks).toLocaleString("en-US")
+        data.attacks.toLocaleString
     }
 
     loadData();
