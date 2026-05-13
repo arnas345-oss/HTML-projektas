@@ -5,18 +5,20 @@ module.exports = async (req, res) => {
     const end = new Date();
     const start = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-    // Convert to Unix timestamps (seconds, not milliseconds)
-    const startTimestamp = Math.floor(start.getTime() / 1000);
-    const endTimestamp = Math.floor(end.getTime() / 1000);
+    // Convert to ISO 8601 format (Cloudflare API requires this format)
+    const startISO = start.toISOString();
+    const endISO = end.toISOString();
 
-    const url =
-      `https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries` +
-      `?start=${startTimestamp}` +
-      `&end=${endTimestamp}`;
+    const url = new URL('https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries');
+    url.searchParams.append('start', startISO);
+    url.searchParams.append('end', endISO);
 
-    const response = await fetch(url, {
+    console.log('Request URL:', url.toString());
+
+    const response = await fetch(url.toString(), {
       headers: {
-        Authorization: `Bearer ${process.env.CF_API_KEY}`
+        Authorization: `Bearer ${process.env.CF_API_KEY}`,
+        'Content-Type': 'application/json'
       }
     });
 
