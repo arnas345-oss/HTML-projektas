@@ -1,15 +1,15 @@
 module.exports = async (req, res) => {
 
   try {
+    const url = "https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries?format=json&dateRange=1d";
 
-    const response = await fetch(
-      "https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries?range=1d",
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.CF_API_KEY}`
-        }
-      }
-    );
+    const response = await fetch(url, {
+    method: "GET",
+    headers: {
+    Authorization: `Bearer ${process.env.CF_API_KEY}`,
+    "Content-Type": "application/json"
+    }
+    });
 
     const json = await response.json();
 
