@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cyber Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: Arial;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .title {
+      font-size: 20px;
+      opacity: 0.7;
+      margin-bottom: 20px;
+    }
+
+    .counter {
+      font-size: 72px;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="title">GLOBAL NETWORK ATTACK ACTIVITY</div>
+
+  <div class="counter" id="counter">
+    Loading...
+  </div>
+
+  <script>
+    async function loadData() {
+
+      const response = await fetch("/api/stats");
+
+      const data = await response.json();
+
+      document.getElementById("counter").innerText =
+        data.attacks.toLocaleString();
+    }
+
+    loadData();
+
+    setInterval(loadData, 60000);
+  </script>
+
+</body>
+</html>
