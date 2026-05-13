@@ -38,21 +38,21 @@
     Kraunama...
   </div>
 
-  <script>
-    async function loadData() {
+<script>
+  async function loadData() {
 
-      const response = await fetch("/api/stats");
+    const response = await fetch("/api/stats");
 
-      const data = await response.json();
+    const data = await response.json();
 
-      document.getElementById("counter").innerText =
-  Number(data.attacks).toLocaleString("en-US");
-    }
+    document.getElementById("counter").innerText =
+      Number(data.attacks).toLocaleString("en-US");
+  }
 
-    loadData();
+  loadData();
 
-    setInterval(loadData, 60000);
-  </script>
+  setInterval(loadData, 60000);
+</script>
 
 </body>
 </html>
