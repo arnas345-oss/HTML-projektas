@@ -3,7 +3,7 @@ module.exports = async (req, res) => {
   try {
 
     const response = await fetch(
-      "https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries",
+      "https://api.cloudflare.com/client/v4/radar/attacks/layer3/timeseries?range=1d",
       {
         headers: {
           Authorization: `Bearer ${process.env.CF_API_KEY}`
@@ -13,27 +13,25 @@ module.exports = async (req, res) => {
 
     const json = await response.json();
 
-    // inspect returned data
     console.log(json);
 
-    // temporary example value
+    // IMPORTANT: safely extract data
     let attacks = 0;
 
-    if (
-      json.result &&
-      json.result.length > 0
-    ) {
-      attacks = json.result[0].value || 0;
+    if (json.success && json.result?.timeseries) {
+
+      attacks = json.result.timeseries.reduce((sum, item) => {
+        return sum + (item.value || 0);
+      }, 0);
+
     }
 
-    res.status(200).json({
-      attacks
-    });
+    res.status(200).json({ attacks });
 
-  } catch (error) {
+  } catch (err) {
 
     res.status(500).json({
-      error: error.toString()
+      error: err.toString()
     });
 
   }
